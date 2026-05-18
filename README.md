@@ -2,7 +2,9 @@
 
 一个 Claude Code skill — 让 Claude 基于 **Asana 配色** + **AscendOps 风格** 一键生成同款单页数据看板 HTML，或把现有页面刷新成同款。
 
-> ⚡ 风格预览：[examples/ascendops-experience.html](./examples/ascendops-experience.html)（紫青卡片渐变） / [examples/ascendops-experience-warm.html](./examples/ascendops-experience-warm.html)（暖色斜向渐变）
+![dashboard-preview](./screenshots/preview-warm.png)
+
+> ⚡ 上图：Variant B（暖色斜向渐变）实际效果 · [Variant A 紫青卡片版本](./examples/ascendops-experience.html) · [Variant B 在线 HTML](./examples/ascendops-experience-warm.html)
 
 ---
 
@@ -105,13 +107,12 @@ dashboard_UI_skill/
 
 ### Variant A · 卡片式 Hero（默认）
 紫青渐变独立卡 + 装饰圆 + 大字号标题。适合**严肃数据看板**、内容紧凑、需要明确分区。
-
-![variant-a](./examples/ascendops-experience.html)
+预览：[examples/ascendops-experience.html](./examples/ascendops-experience.html)
 
 ### Variant B · 整页斜向渐变（暖色，参考 The Software House）
 暖橙→紫→蓝 6 段斜向渐变 + 平行四边形条带 overlay，Hero 去外壳。适合**偏品牌/营销感**看板、希望页面有"氛围"。
 
-![variant-b](./examples/ascendops-experience-warm.html)
+![variant-b](./screenshots/preview-warm.png)
 
 切换方式：生成时跟 Claude 说 "用 Variant A" 或 "用 Variant B"。SKILL.md 里有完整 CSS。
 
