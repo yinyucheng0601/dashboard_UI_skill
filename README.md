@@ -6,13 +6,18 @@
 
 ---
 
-## 它能做什么
+## 它能做什么（默认场景：计算开发领域）
+
+> 这个 skill 的蓝本就是 **CANN 算子开发体验看板（AscendOps）**，所以最顺手的用法是做"计算开发体验度量"类的页面：算子开发、图开发、推理性能、模型零 Day 发布、Agentic 评测……都是天然适配的业务对象。
 
 输入 | 输出
 ---|---
-"用 dashboard-gen 给我生成一个销售看板" | 完整单文件 HTML 看板，含 Hero + Pipeline + 业务卡 + 图表 + 列表
-"用 dashboard-gen 把 xxx.html 刷新成同款风格" | 替换 :root token、批量迁移硬编码 hex、清理反模式
-"用 dashboard-gen 但 banner 用 Variant B" | 使用整页斜向渐变方案（参考 The Software House）
+"用 dashboard-gen 生成一个算子开发体验看板" | AscendOps 同款：Hero KPI + 8 阶段 Pipeline + 4 场景卡 + 触点矩阵 + Agent 评分 + 痛点 Top10 + VOD 原声 |
+"用 dashboard-gen 做一个图开发体验度量页" | 同款风格，但业务对象换成 自定义算子入图 / 融合 Pass / Sample 覆盖度 |
+"用 dashboard-gen 把 ascendops-experience.html 刷新一下" | 替换 :root token、批量迁移硬编码 hex、清理反模式 |
+"用 dashboard-gen 但 banner 用 Variant B" | 切到暖色斜向渐变（参考 The Software House） |
+
+> 也能做非算子领域的看板（销售/运营/治理/团队周报），SKILL.md 的色族绑定和楼层模板是通用的——只是默认 example 数据全是计算开发的。
 
 ---
 
@@ -31,27 +36,48 @@ git clone https://github.com/yinyucheng0601/dashboard_UI_skill.git dashboard-gen
 
 ---
 
-## 使用
+## 快速上手（5 分钟跑通 AscendOps 同款）
 
-进入 Claude Code 会话后：
+### Step 1 · 准备数据（可选）
+如果你有真实的算子开发体验数据（JSON / CSV / JSONL），把路径准备好。比如：
+- `cann-agentic-summary.json` — 仓库级 Agent 评分汇总（observable_average / category / Top-Bottom）
+- `touchpoints.jsonl` — 体验触点逐条记录（场景 × 维度 × 评分）
+- `vod-quotes.md` — VOD 原声（用户研究引语）
+
+**没有真实数据也可以**——直接让 Claude 编合理的示意数据。
+
+### Step 2 · 在 Claude Code 里触发
 
 ```
 /dashboard-gen
-我要做一个销售看板，数据在 ~/sales-data.json，
-要展示 Q2 业绩 / 地区分布 / Top10 客户 / 增长趋势。
+做一个算子开发体验看板，数据在 ~/my-data/，
+要展示算子开发八阶段、4 个典型场景（复现部署/迁移部署/Builtin定制/基本功能实现）、
+Agent 采纳率、痛点 Top10、VOD 原声。banner 用 Variant A。
 ```
 
-或自然语言触发（关键词命中 SKILL.md 的"触发条件"）：
+或自然语言触发（命中 SKILL.md 的"触发条件"关键词）：
 
 ```
-请给我生成一个 dashboard，看团队周报数据
+请基于 ~/cann-dashboard/ 的数据生成一个 CANN 算子开发体验度量 dashboard
 ```
 
-Claude 会：
-1. 摸清你的需求（业务主题 / 数据来源 / 楼层选择）
-2. 给出 ASCII 布局方案让你确认
-3. 生成单文件 HTML（继承 Asana token + AscendOps 蓝本）
-4. `open` 浏览器让你看效果
+### Step 3 · Claude 会先给方案让你确认
+基于 dashboard-ui-design.md 的组件清单，挑 8–12 个楼层，给出 ASCII 布局图 + 业务映射，你改 / 确认后才会写代码（不会偷跑）。
+
+### Step 4 · 生成 HTML + 浏览器验证
+单文件 HTML 写完后会 `open` 浏览器让你看效果。后续微调直接说"把折线颜色换成 Coral"、"Hero KPI 高度再加 20px"，Claude 会按 Asana token 改。
+
+---
+
+## 计算开发领域常见看板配方
+
+| 看板类型 | 推荐楼层组合 | 4 业务对象建议 |
+|---|---|---|
+| **算子开发体验**（AscendOps 同款） | Hero / 8 阶段 Pipeline / 4 场景 / 触点矩阵 / Agent 评分 / 痛点 Top10 / 仓库 Top-Bottom / 趋势 / VOD | 复现部署 / 迁移部署 / Builtin 定制 / 基本功能实现 |
+| **图开发体验度量** | Hero / 5 阶段 Pipeline / 3 场景 / 接口满足度 / Sample 覆盖度 / 优秀实践 | 图构造 / 图开发 / 图扩展 / 融合 Pass |
+| **模型零 Day 发布** | Hero / 模型时间轴 / 基础模型卡 / SOTA 性能 / E2E 部署 / 性能值趋势 | 基础模型 / SOTA / E2E / 数据集 |
+| **PyTorch API 支持度** | Hero / Core test 通过率 / 增强能力 / API 类别条形 / 高频 issue Top | 算子 API / 通信 API / 框架 API / 工具 API |
+| **Agentic 体验评测** | Hero / 双场景对比 / 4 指标雷达 / 任务耗时分布 / Token 消耗趋势 | 算子开发 / 模型加速 / 调优 / 推理 |
 
 ---
 
