@@ -19,10 +19,13 @@ description: 基于 Asana 配色 + AscendOps 风格快速生成单页数据看�
 
 ## 关键参考文件（必读）
 
+所有路径都相对本 skill 目录解析；不要使用 `/Users/yin/...` 这类作者本机绝对路径。
+
 | 路径 | 用途 |
 |------|------|
-| `/Users/yin/dashboard-ui-design.md` | **设计规范全文** — Design tokens、组件 spec、反模式、布局栅格、字体阶梯。**生成前必读。** |
-| `/Users/yin/AscendCANN-main/cann-dashboard/ascendops-experience.html` | **真实蓝本** — 1300 行完整实现，可直接复制改业务内容 |
+| `./dashboard-ui-design.md` | **设计规范全文** — Design tokens、组件 spec、反模式、布局栅格、字体阶梯。**生成前必读。** |
+| `./examples/ascendops-experience.html` | **Variant A 真实蓝本** — 完整实现，可直接复制改业务内容 |
+| `./examples/ascendops-experience-warm.html` | **Variant B 真实蓝本** — 暖色整页渐变版本 |
 
 ---
 
@@ -50,6 +53,8 @@ description: 基于 Asana 配色 + AscendOps 风格快速生成单页数据看�
 5. 替换列表数据：痛点 / 仓库 / VOD
 6. 折线 / 柱状图：series 数据换真值，颜色绑业务
 
+**高还原要求**：当用户说"同款 / 还原 / 按这个 skill 优化 / AscendOps 风格"时，必须从 `examples/ascendops-experience*.html` 复制成新文件再迁移业务数据。不要在已有页面 CSS 上局部打补丁，也不要保留已有 ECharts/Chart.js 图表实现。
+
 ### Phase 4 · 浏览器验证
 `open <path>` 让用户看，按反馈调整。**不要自夸"完成了"** —— UI 改动只有用户在浏览器看过才算完。
 
@@ -57,12 +62,25 @@ description: 基于 Asana 配色 + AscendOps 风格快速生成单页数据看�
 
 ## 工作流程（Mode B · 刷新现有页面）
 
-1. **Read 现有 HTML** 看它的结构和当前色系
-2. **诊断**：列出违反 Asana 体系的硬编码 hex、box-shadow、浏览器 chrome、过粗字重、左侧导航等反模式
-3. **替换 :root** 整段为 Asana 全套 token（从 `dashboard-ui-design.md` Section 2 直接复制）
-4. **用 sed 批量替换硬编码 hex**（参考下方"色彩迁移映射表"）
-5. **去掉反模式**：浏览器壳 / 重阴影 / 800+ 字重的大数字 / 多余的 Bold
-6. **open** 让用户验证
+先判断用户目标：
+
+- **高还原刷新（默认）**：用户要"同款 / 还原 / 优化成 AscendOps / 按这个 skill 重做"时，复制 `examples/ascendops-experience.html` 或 warm 版本为新文件，把现有页面的数据、文案、交互迁移进去。不得沿用旧页面的布局骨架、响应式宽度、ECharts/Chart.js 图表。
+- **仅换肤迁移（低保真）**：只有用户明确要求"保留现有布局，只换色 / 快速刷新"时才在原 HTML 上改 token。开始前说明这种模式不能保证页面宽度、图表样式、组件还原度。
+
+高还原刷新步骤：
+1. Read 现有 HTML，提取业务数据、模块清单、交互状态。
+2. 选择 Variant A/B 蓝本并复制为目标文件。
+3. 保留蓝本的 `.browser`、row grid、section/card/chart 实现，只替换数据和文案。
+4. 若旧页面使用 ECharts/Chart.js/d3，将图表改写为蓝本中的 inline SVG / CSS 实现。
+5. 跑下方"还原度自检"，命中任何失败项就先修再交付。
+
+仅换肤迁移步骤：
+1. Read 现有 HTML 看结构和当前色系。
+2. 诊断违反 Asana 体系的硬编码 hex、box-shadow、浏览器 chrome、过粗字重、左侧导航等反模式。
+3. 替换 `:root` 为 Asana 全套 token。
+4. 用 sed 批量替换硬编码 hex（参考下方"色彩迁移映射表"）。
+5. 去掉反模式：浏览器壳 / 重阴影 / 800+ 字重的大数字 / 多余的 Bold。
+6. open 让用户验证。
 
 ---
 
@@ -102,6 +120,7 @@ sed -i '' \
 ## 硬规则（不可破）
 
 - 单文件 HTML，无外部 JS 库（chart.js、d3、echarts 都不要）
+- 高还原产物必须保留桌面定宽框架：`<meta name="viewport" content="width=1440">`、`body{min-width:1440px}`、`.browser{width:1392px;margin:0 auto}`
 - 只用 Asana token（5 色族 × 5 层 + 10 灰阶 + Navy），禁用 Tailwind 默认色
 - 卡片不加重阴影，靠 1px border + bg 分隔（hero / tooltip 例外）
 - 不做浏览器 chrome 装饰（traffic light、URL bar）
@@ -224,11 +243,13 @@ body::before{
 ## 反例自检
 
 写完后扫一遍，命中任何一条就回去改：
+- [ ] 有没有 `<script src="https://cdn.jsdelivr.net/npm/echarts`、chart.js、d3 或其它外部 JS？
+- [ ] 有没有丢失 `width=1440` viewport、`body{min-width:1440px}`、`.browser{width:1392px;margin:0 auto}`？
 - [ ] 有没有 `box-shadow:` 在普通卡片上？
 - [ ] 有没有 Tailwind 系 hex（`#3B82F6` / `#EF4444` / `#10B981` 等）？
 - [ ] 大数字字重是不是写到了 700+？
 - [ ] 业务对象色族用超过 4 种？
 - [ ] 用了 `<emoji>` 但其他地方又用了 SVG？应该统一
-- [ ] 折线图用了 chart.js / echarts？应该用纯 SVG
+- [ ] 折线图、柱状图、donut、雷达图用了图表库？应该用纯 SVG / CSS
 - [ ] 用了浏览器 chrome 装饰？删
 - [ ] 卡片内文字色用了 #000？应该用 g10 `#1B2432`
